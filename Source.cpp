@@ -5,7 +5,7 @@ using namespace std;
 int main()
 {
     List<int> lst;
-    for (int i = 0; i < 35; i++)
+    for (int i = 0; i < 20; i++)
     {
         lst.push_back(i);
     }
@@ -19,9 +19,10 @@ int main()
     cout << "Sit: " << *++it << endl;
     lst.erase(it);
     lst.print(); */
-    cout << endl << endl;
+    lst.push_front(928);
+    cout << "Current List:" << endl;
     lst.print();
-    cout << lst.GetSize() << endl;
+    cout << "Size of list: " << lst.GetSize() << endl;
     cout << endl << endl;
     lst.printarr();
     return 0;

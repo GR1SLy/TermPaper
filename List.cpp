@@ -104,6 +104,7 @@ void List<T>::push_back(const T value)
             Node<T>** temparr = fastarr;
             fastarr = new Node<T>*[size / 10 + 1];
             for (int i = 0; i < size / 10; i++) fastarr[i] = temparr[i];
+            delete[] temparr;
             fastarr[size / 10] = this->tail;
         }
         arrsize++;
@@ -132,12 +133,26 @@ void List<T>::push_front(const T value)
         this->head->prev = newhead;
         this->head = newhead;
     }
-    /*if (++size % 10 == 0) 
+    if (size % 10 == 0)
     {
-        T** temparr = fastarr;
-        fastarr = new T*[strlen(temparr) + 1];
-        fastarr[0] = 
-    } */
+        if (fastarr == nullptr)
+        {
+            fastarr = new Node<T>*[1];
+            fastarr[0] = this->tail;
+        }
+        else
+        {
+            Node<T> **temparr = fastarr;
+            fastarr = new Node<T>*[size / 10 + 1];
+            for (int i = 0; i < size / 10; i++) fastarr[i] = temparr[i]->prev;
+            fastarr[size / 10] = this->tail;
+            delete[] temparr;
+        }
+        arrsize++;
+    }
+
+
+    size++;
 }
 
 template<typename T>
