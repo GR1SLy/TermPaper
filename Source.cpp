@@ -21,7 +21,9 @@ int main()
     lst.print(); */
     lst.push_front(928);
     lst.push_front(8832);
-    lst.pop_front();
+    List<int>::iterator it = lst.begin();
+    lst.insert(it, 7632);
+    lst.erase(it);
     cout << "Current List:" << endl;
     lst.print();
     cout << "Size of list: " << lst.GetSize() << endl;

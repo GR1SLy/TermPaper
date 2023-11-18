@@ -66,18 +66,31 @@ int List<T>::GetSize()
     return this->size;
 }
 
-template<typename T>
-void List<T>::insert(const iterator it, const T value)
+template<typename T>//
+void List<T>::insert(iterator &it, const T value)
 {
     Node<T> *current = it.node;
-    current->prev->next = new Node<T>(value, current, current->prev);
+    if (current == this->head)
+    { 
+        this->head = new Node<T>(value, current);
+        current->prev = this->head;
+        it.node = this->head;
+    }
+    else current->prev->next = new Node<T>(value, current, current->prev);
+    size++;
 }
 
-template<typename T>
-void List<T>::erase(const iterator it)
+template<typename T>//
+void List<T>::erase(iterator& it)
 {
     Node<T> *current = it.node;
-    current->prev->next = current->next;
+    if (current == this->head) 
+    {
+        this->head = current->next;
+        current->next->prev = nullptr;
+        it.node = this->head;
+    }
+    else current->prev->next = current->next;
     delete current;
     size--;
 }

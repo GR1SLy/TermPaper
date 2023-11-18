@@ -69,8 +69,8 @@ public:
     int GetSize();
     iterator begin() { return iterator(this->head); }
     iterator end() { return iterator(this->tail); }
-    void insert(const iterator it, const T value);
-    void erase(const iterator it);
+    void insert(iterator& it, const T value);
+    void erase(iterator& it);
     void push_back(const T value);
     void pop_back();
     void push_front(const T value);
