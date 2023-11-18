@@ -20,6 +20,8 @@ int main()
     lst.erase(it);
     lst.print(); */
     lst.push_front(928);
+    lst.push_front(8832);
+    lst.pop_front();
     cout << "Current List:" << endl;
     lst.print();
     cout << "Size of list: " << lst.GetSize() << endl;

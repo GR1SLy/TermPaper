@@ -116,6 +116,14 @@ template<typename T>
 void List<T>::pop_back()
 {
     if (this->head == nullptr) return; // need exception
+    if (fastarr[size / 10] == this->tail)
+    {
+        arrsize--;
+        Node<T>** temparr = fastarr;
+        fastarr = new Node<T>*[arrsize];
+        for (int i = 0; i < arrsize; i++) fastarr[i] = temparr[i];
+        delete[] temparr;
+    }
     Node<T> *current = this->tail;
     this->tail = current->prev;
     current->prev->next = nullptr;
@@ -150,6 +158,7 @@ void List<T>::push_front(const T value)
         }
         arrsize++;
     }
+    else if (fastarr != nullptr) for (int i = 0; i < arrsize; i++) fastarr[i] = fastarr[i]->prev;
 
 
     size++;
@@ -159,6 +168,15 @@ template<typename T>
 void List<T>::pop_front()
 {
     if (this->head == nullptr) return; // need exception
+    if (fastarr[size / 10] == this->tail)
+    {
+        arrsize--;
+        Node<T>** temparr = fastarr;
+        fastarr = new Node<T>*[arrsize];
+        for (int i = 0; i < arrsize; i++) fastarr[i] = temparr[i]->next;
+        delete[] temparr;   
+    }
+    else if (fastarr != nullptr) for (int i = 0; i < arrsize; i++) fastarr[i] = fastarr[i]->next;
     Node<T> *current = this->head;
     this->head = current->next;
     delete current;
