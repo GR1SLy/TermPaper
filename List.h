@@ -13,9 +13,9 @@ class List
     struct Node
     {
     public:
+        T1 value;
         Node* next;
         Node* prev;
-        T1 value;
         Node() { value = T1(); next = nullptr; prev = nullptr; }
         Node(const T1 value) { this->value = value; next = nullptr; prev = nullptr; }
         Node(const T1 value, Node* next):Node(value) { this->next = next; prev = nullptr; }
@@ -23,11 +23,13 @@ class List
 
     };
 
+    unsigned int size;
+    unsigned int arrsize;
     Node<T> *tail;
     Node<T> *head;
-    unsigned int size;
     Node<T>** fastarr;
-    unsigned int arrsize;
+
+    void setfastarr(); //use after sort
 
 public:
 
@@ -69,13 +71,14 @@ public:
     int GetSize();
     iterator begin() { return iterator(this->head); }
     iterator end() { return iterator(this->tail); }
-    void insert(iterator& it, const T value);
+    void insert(iterator& it, const T value);// можно добавить индекс каждому узлу и тем самым уменьшить радиус поиска смещения
     void erase(iterator& it);
     void push_back(const T value);
-    void pop_back();
+    void pop_back();// need exception
     void push_front(const T value);
-    void pop_front();
-    void printarr();
+    void pop_front();//need exception
+    void printarr();//Нужно будет поменять на возврат массива const
+    void sort();
     friend void advance(iterator& it, const int index) { for (int i = 0; i < index; i++) ++it; }
     
 };

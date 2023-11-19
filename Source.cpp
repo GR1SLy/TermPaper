@@ -5,7 +5,7 @@ using namespace std;
 int main()
 {
     List<int> lst;
-    for (int i = 0; i < 20; i++)
+    for (int i = 20; i > 0; i--)
     {
         lst.push_back(i);
     }
@@ -24,6 +24,7 @@ int main()
     List<int>::iterator it = lst.begin();
     lst.insert(it, 7632);
     lst.erase(it);
+    lst.sort();
     cout << "Current List:" << endl;
     lst.print();
     cout << "Size of list: " << lst.GetSize() << endl;

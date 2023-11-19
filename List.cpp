@@ -1,6 +1,22 @@
 #include "List.h"
 
-template<typename T>
+template <typename T>
+void List<T>::setfastarr()
+{
+    Node<T> *current = this->head;
+    delete[] fastarr;
+    Node<T>** fastarr = new Node<T>*[arrsize];
+    int j = 0;
+    fastarr[j++] = this->head;
+    int i = 1;
+    while (current->next != nullptr)
+    {
+        current = current->next;
+        if (i++ % 10 == 0) fastarr[j++] = current;
+    }
+}
+
+template <typename T>
 List<T>::List()
 {
     size = 0;
@@ -78,6 +94,7 @@ void List<T>::insert(iterator &it, const T value)
     }
     else current->prev->next = new Node<T>(value, current, current->prev);
     size++;
+    this->setfastarr();
 }
 
 template<typename T>//
@@ -93,6 +110,7 @@ void List<T>::erase(iterator& it)
     else current->prev->next = current->next;
     delete current;
     size--;
+    this->setfastarr();
 }
 
 template<typename T>
@@ -202,5 +220,27 @@ void List<T>::printarr()
     for (int i = 0; i < arrsize; i++)
     {
         cout << fastarr[i]->value << endl;
+    }
+}
+
+template <typename T>
+void List<T>::sort() // сортировка вставками
+{
+    Node<T>* current = this->head;
+    while (current->next != nullptr)
+    {
+        if (current->next->value < current->value)
+        {
+            Node<T>* curprev = current;
+            Node<T>* curnext = current->next;
+            while (curnext->value < curprev->value && curprev->prev != nullptr) curprev = curprev->prev;
+            curnext->prev->next = curnext->next;//оборвали связь со взятым элементом
+            curnext->next->prev = curnext->prev;
+            curnext->next = curprev->next;//Добавили взятый элемент на его место
+            curprev->next->prev = curnext;
+            curprev->next = curnext;
+            curnext->prev = curprev;
+        }
+        current = current->next;
     }
 }
