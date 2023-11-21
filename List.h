@@ -14,17 +14,18 @@ class List
     struct Node
     {
     public:
-        T1 value;
+        T1* value;
         Node* next;
         Node* prev;
         Node() { value = T1(); next = nullptr; prev = nullptr; }
-        Node(const T1 value) { this->value = value; next = nullptr; prev = nullptr; }
-        Node(const T1 value, Node* next):Node(value) { this->next = next; prev = nullptr; }
-        Node(const T1 value, Node* prev, int k):Node(value) { this->prev = prev; next = nullptr; }
-        Node(const T1 value, Node* next, Node* prev):Node(value, next) { this->prev = prev; }
+        Node(T1* value) { this->value = value; next = nullptr; prev = nullptr; }
+        Node(T1* value, Node* next):Node(value) { this->next = next; prev = nullptr; }
+        Node(T1* value, Node* prev, int k):Node(value) { this->prev = prev; next = nullptr; }
+        Node(T1* value, Node* next, Node* prev):Node(value, next) { this->prev = prev; }
 
     };
 
+    bool deserializeflag = 0;
     unsigned int size;
     unsigned int arrsize;
     Node<T> *tail;
@@ -32,6 +33,7 @@ class List
     Node<T>** fastarr;
 
     void setfastarr(); //use after sort
+    void clear_deserialized_objects(); // use in destructor to delete created objects in the heap after deserialize
 
 public:
 
@@ -40,8 +42,8 @@ public:
         iterator() { node = nullptr; count = 0; }
         iterator(Node<T> *node) { count = 0; this->node = node; }
         
-        T& operator* () { return this->node->value; }
-        T& operator=(const T value) { return this->node->value = value; }
+        T& operator* () { return *this->node->value; }
+        T& operator=(const T* value) { return *this->node->value = *value; }
 
         iterator& operator++() //need exception
         {
@@ -58,8 +60,8 @@ public:
         
         int get_count() { return count; } // debug
 
-        bool operator<(const iterator& other) { return this->node->value < other.node->value; }
-        bool operator>(const iterator& other) { return this->node->value > other.node->value; }
+        bool operator<(const iterator& other) { return *this->node->value < *other.node->value; }
+        bool operator>(const iterator& other) { return *this->node->value > *other.node->value; }
         
         friend ostream& operator<< (const ostream& os, const iterator& it) { return os << it.node; }
         friend class List;
@@ -76,11 +78,11 @@ public:
     int GetSize();
     iterator begin() { return iterator(this->head); }
     iterator end() { return iterator(this->tail); }
-    void insert(iterator& it, const T value);
+    void insert(iterator& it, const T* value);
     void erase(iterator& it);
-    void push_back(const T value);
+    void push_back(T* value);
     void pop_back();// need exception
-    void push_front(const T value);
+    void push_front(T* value);
     void pop_front();//need exception
     void printarr(); // for debug
     void sort();

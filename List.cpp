@@ -29,6 +29,7 @@ List<T>::List()
 template<typename T>
 List<T>::~List()
 {
+    if (deserializeflag) this->clear_deserialized_objects();
     if (this->head != nullptr)
     {
         Node<T> *current = this->head;
@@ -52,10 +53,10 @@ void List<T>::print()
     int i = 0;
     while (current->next != nullptr)
     {
-        cout << i++ << ": " << current->value << endl;
+        cout << i++ << ": " << *current->value << endl;
         current = current->next;
     }
-    cout << i << ": " << current->value << endl;
+    cout << i << ": " << *current->value << endl;
 }
 
 template<typename T>
@@ -83,8 +84,8 @@ int List<T>::GetSize()
     return this->size;
 }
 
-template<typename T>//
-void List<T>::insert(iterator &it, const T value)
+template<typename T>
+void List<T>::insert(iterator &it, const T* value)
 {
     Node<T> *current = it.node;
     if (current == this->head)
@@ -125,7 +126,7 @@ void List<T>::erase(iterator& it)
 }
 
 template<typename T>
-void List<T>::push_back(const T value)
+void List<T>::push_back(T* value)
 {
     if (head == nullptr) head = tail = new Node<T>(value);
     else
@@ -174,7 +175,7 @@ void List<T>::pop_back()
 }
 
 template<typename T>
-void List<T>::push_front(const T value)
+void List<T>::push_front(T* value)
 {
     if (this->head == nullptr) head = tail = new Node<T>(value);
     else
@@ -241,7 +242,7 @@ void List<T>::sort() // сортировка вставками
     bool headflag, tailflag;
     while (current->next != nullptr)
     {
-        if (current->next->value <= current->value)
+        if (*current->next->value <= *current->value)
         {
             Node<T>* curprev = current;
             Node<T>* curnext = current->next;
@@ -250,10 +251,10 @@ void List<T>::sort() // сортировка вставками
 
             if (curnext == this->tail) tailflag = 1;
 
-            while (curnext->value < curprev->value)
+            while (*curnext->value < *curprev->value)
             {
                 if (curprev->prev == nullptr) { headflag = 1; break; }
-                if (curprev->prev->value <= curnext->value) break;
+                if (*curprev->prev->value <= *curnext->value) break;
                 curprev = curprev->prev;
             }
             //curprev = curprev->next;
@@ -302,8 +303,8 @@ void List<T>::serialize(ofstream& ofs)
 {
     ofs.write((char*)&size, sizeof(unsigned int));
     Node<T>* current = this->head;
-    while (current->next != nullptr) { ofs.write((char*)&current->value, sizeof(T)); current = current->next; }
-    ofs.write((char*)&current->value, sizeof(T));
+    while (current->next != nullptr) { ofs.write((char*)current->value, sizeof(T)); current = current->next; }
+    ofs.write((char*)current->value, sizeof(T));
     ofs.close();
 }
 
@@ -322,17 +323,29 @@ void List<T>::deserialize(ifstream& ifs)
     ifs.read((char*)&size, sizeof(unsigned int));
     T value;
     ifs.read((char*)&value, sizeof(T));
-    this->head = new Node<T>(value);
+    T* valptr = new T(value);
+    this->head = new Node<T>(valptr);
     Node<T>* current = this->head;
     for (int i = 1; i < size - 1; i++) 
     { 
         ifs.read((char*)&value, sizeof(T));
-        current->next = new Node<T>(value, current, 0);
+        valptr = new T(value);
+        current->next = new Node<T>(valptr, current, 0);
         current = current->next;
     }
     ifs.read((char*)&value, sizeof(T));
-    this->tail = new Node<T>(value, current, 0);
+    valptr = new T(value);
+    this->tail = new Node<T>(valptr, current, 0);
     current->next = this->tail;
     ifs.close();
     this->setfastarr();
+    deserializeflag = 1;
+}
+
+template <typename T>
+void List<T>::clear_deserialized_objects()
+{
+    Node<T>* current = this->head;
+    while (current->next != nullptr) { delete current->value; current = current->next; }
+    delete current->value;
 }

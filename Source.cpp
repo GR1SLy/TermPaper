@@ -28,30 +28,36 @@ int main()
     // lst.push_front(1111);
 
     List<int> lst;
-    for (int i = 0; i < 5; i++)
-    {
-        lst.push_back(i);
-    }
+    int a;
+    // for (int i = 0; i < 5; i++)
+    // {
+    //     a = i;
+    //     cout << a << endl;
+    //     lst.push_back(&a);
+    // }
+    int b = 99;
+    int c = 20;
+    int d = 83;
+    int e = 72;
+    lst.push_back(&b);
+    lst.push_back(&c);
+    lst.push_front(&d);
     lst.print();
+
+
     lst.serialize("test.bin");
 
-    ifstream t("test.bin", ios::binary);
-    int k = -1;
-    if (t.is_open()) 
-    {
-        t.read((char *)&k, sizeof(int));
-        int c = k;
-        for (int i = 0; i < c; i++) { t.read((char *)&k, sizeof(int)); cout << k << endl; }
-    }
-    else cout << "ASDASDAD" << endl;
-    t.close();
-
     List<int> lst2;
+    lst2.deserialize("test.bin");
+    lst2.print();
+
+
+    // List<int> lst2;
     // ifstream ifs("test.bin");
     // if (!ifs.is_open()) cout << "Cannot open test.bin for reading" << endl;
     // else lst2.deserialize(ifs);
-    lst2.deserialize("test.bin");
-    lst2.print();
+    // lst2.deserialize("test.bin");
+    // lst2.print();
     
     // lst.push_front(928);
     // lst.push_front(8832);
