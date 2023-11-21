@@ -20,6 +20,7 @@ class List
         Node() { value = T1(); next = nullptr; prev = nullptr; }
         Node(const T1 value) { this->value = value; next = nullptr; prev = nullptr; }
         Node(const T1 value, Node* next):Node(value) { this->next = next; prev = nullptr; }
+        Node(const T1 value, Node* prev, int k):Node(value) { this->prev = prev; next = nullptr; }
         Node(const T1 value, Node* next, Node* prev):Node(value, next) { this->prev = prev; }
 
     };
@@ -83,8 +84,10 @@ public:
     void pop_front();//need exception
     void printarr(); // for debug
     void sort();
-    void serialze(char* filename);
+    void serialize(char* filename);
+    void serialize(ofstream& ofs);
     void deserialize(char* filename);
+    void deserialize(ifstream& ifs);
     friend void advance(iterator& it, int index, List<T>& lst) { it.node = lst.fastarr[index / 10]; for (int i = 0; i < index % 10; i++) ++it; } // fast iteration
     friend void advance(iterator& it, int index) { for (int i = 0; i < index / 10; i++) ++it; } // slow iteration
     

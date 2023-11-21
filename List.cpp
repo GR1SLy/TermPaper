@@ -291,16 +291,48 @@ void List<T>::sort() // сортировка вставками
 }
 
 template <typename T>
-void List<T>::serialze(char *filename)
+void List<T>::serialize(char *filename)
 {
     ofstream ofs(filename, ios::binary);
     if (!ofs.is_open()) { cout << "Cannot open " << filename << " for writing" << endl; return; }
-
+    this->serialize(ofs);
+}
+template <typename T>
+void List<T>::serialize(ofstream& ofs)
+{
+    ofs.write((char*)&size, sizeof(unsigned int));
+    Node<T>* current = this->head;
+    while (current->next != nullptr) { ofs.write((char*)&current->value, sizeof(T)); current = current->next; }
+    ofs.write((char*)&current->value, sizeof(T));
+    ofs.close();
 }
 
 template <typename T>
 void List<T>::deserialize(char *filename)
 {
     ifstream ifs(filename, ios::binary);
-    if (ifs.is_open()) { cout << "Cannot open " << filename << " for reading" << endl; return; }
+    if (!ifs.is_open()) { cout << "Cannot open " << filename << " for reading" << endl; return; }
+    this->deserialize(ifs);
+
+}
+
+template<typename T>
+void List<T>::deserialize(ifstream& ifs)
+{
+    ifs.read((char*)&size, sizeof(unsigned int));
+    T value;
+    ifs.read((char*)&value, sizeof(T));
+    this->head = new Node<T>(value);
+    Node<T>* current = this->head;
+    for (int i = 1; i < size - 1; i++) 
+    { 
+        ifs.read((char*)&value, sizeof(T));
+        current->next = new Node<T>(value, current, 0);
+        current = current->next;
+    }
+    ifs.read((char*)&value, sizeof(T));
+    this->tail = new Node<T>(value, current, 0);
+    current->next = this->tail;
+    ifs.close();
+    this->setfastarr();
 }

@@ -4,7 +4,7 @@
 Сериализация
 */
 
-
+#include <fstream>
 #include "List.cpp"
 #include <iostream>
 using namespace std;
@@ -28,40 +28,60 @@ int main()
     // lst.push_front(1111);
 
     List<int> lst;
-    for (int i = 20; i > 0; i--)
+    for (int i = 0; i < 5; i++)
     {
         lst.push_back(i);
     }
+    lst.print();
+    lst.serialize("test.bin");
+
+    ifstream t("test.bin", ios::binary);
+    int k = -1;
+    if (t.is_open()) 
+    {
+        t.read((char *)&k, sizeof(int));
+        int c = k;
+        for (int i = 0; i < c; i++) { t.read((char *)&k, sizeof(int)); cout << k << endl; }
+    }
+    else cout << "ASDASDAD" << endl;
+    t.close();
+
+    List<int> lst2;
+    // ifstream ifs("test.bin");
+    // if (!ifs.is_open()) cout << "Cannot open test.bin for reading" << endl;
+    // else lst2.deserialize(ifs);
+    lst2.deserialize("test.bin");
+    lst2.print();
     
-    lst.push_front(928);
-    lst.push_front(8832);
+    // lst.push_front(928);
+    // lst.push_front(8832);
 
-    //lst.sort();
-    cout << "Current List:" << endl;
-    lst.print();
-    cout << "Size of list: " << lst.GetSize() << endl;
-    cout << endl << endl;
-    lst.printarr();
+    // //lst.sort();
+    // cout << "Current List:" << endl;
+    // lst.print();
+    // cout << "Size of list: " << lst.GetSize() << endl;
+    // cout << endl << endl;
+    // lst.printarr();
 
-    auto it = lst.begin();
-    cout << "it1: " << it.get_count() << endl;
-    ++it;
-    cout << "it2: " << it.get_count() << endl;
-    advance(it, 5, lst);
-    cout << "it3: " << it.get_count() << endl;
-    lst.insert(it, 9874);
-    lst.erase(++it);
-    // it = lst.end();
-    lst.print();
-    lst.printarr();
-    cout << endl;
-    lst.erase(it);
-    cout << "it4: " << it.get_count() << endl;
-    cout << endl << endl;
-    lst.pop_back();
-    lst.print();
-    cout << endl;
-    lst.printarr();
+    // auto it = lst.begin();
+    // cout << "it1: " << it.get_count() << endl;
+    // ++it;
+    // cout << "it2: " << it.get_count() << endl;
+    // advance(it, 5, lst);
+    // cout << "it3: " << it.get_count() << endl;
+    // lst.insert(it, 9874);
+    // lst.erase(++it);
+    // // it = lst.end();
+    // lst.print();
+    // lst.printarr();
+    // cout << endl;
+    // lst.erase(it);
+    // cout << "it4: " << it.get_count() << endl;
+    // cout << endl << endl;
+    // lst.pop_back();
+    // lst.print();
+    // cout << endl;
+    // lst.printarr();
     // lst.push_front(8832);
     // lst.push_front(735);
     // lst.push_front(888);
