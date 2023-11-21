@@ -49,12 +49,13 @@ void List<T>::print()
 {
     if(this->head == nullptr) return;
     Node<T> *current = this->head;
+    int i = 0;
     while (current->next != nullptr)
     {
-        cout << current->value << endl;
+        cout << i++ << ": " << current->value << endl;
         current = current->next;
     }
-    cout << current->value << endl;
+    cout << i << ": " << current->value << endl;
 }
 
 template<typename T>
@@ -94,23 +95,33 @@ void List<T>::insert(iterator &it, const T value)
     }
     else current->prev->next = new Node<T>(value, current, current->prev);
     size++;
-    this->setfastarr();
+
+    if (arrsize > it.count / 10) for (int i = it.count / 10 + 1; i < arrsize; i++) fastarr[i] = fastarr[i]->prev;
 }
 
-template<typename T>//
+template<typename T>
 void List<T>::erase(iterator& it)
 {
+    if (fastarr[arrsize - 1] == this->tail)
+    {
+        Node<T>** temp = fastarr;
+        arrsize--;
+        fastarr = new Node<T>*[arrsize];
+        for (int i = 0; i < arrsize; i++) fastarr[i] = temp[i];
+    }
     Node<T> *current = it.node;
+    it.node = it.node->next;
     if (current == this->head) 
     {
         this->head = current->next;
         current->next->prev = nullptr;
         it.node = this->head;
     }
-    else current->prev->next = current->next;
+    else { current->prev->next = current->next; current->next->prev = current->prev; }
     delete current;
     size--;
-    this->setfastarr();
+
+    if (arrsize > it.count / 10) for (int i = it.count / 10 + 1; i < arrsize; i++) if (fastarr[i]->next != nullptr) fastarr[i] = fastarr[i]->next;
 }
 
 template<typename T>
@@ -227,20 +238,69 @@ template <typename T>
 void List<T>::sort() // сортировка вставками
 {
     Node<T>* current = this->head;
+    bool headflag, tailflag;
     while (current->next != nullptr)
     {
-        if (current->next->value < current->value)
+        if (current->next->value <= current->value)
         {
             Node<T>* curprev = current;
             Node<T>* curnext = current->next;
-            while (curnext->value < curprev->value && curprev->prev != nullptr) curprev = curprev->prev;
-            curnext->prev->next = curnext->next;//оборвали связь со взятым элементом
-            curnext->next->prev = curnext->prev;
-            curnext->next = curprev->next;//Добавили взятый элемент на его место
-            curprev->next->prev = curnext;
-            curprev->next = curnext;
-            curnext->prev = curprev;
+
+            headflag = tailflag = 0;
+
+            if (curnext == this->tail) tailflag = 1;
+
+            while (curnext->value < curprev->value)
+            {
+                if (curprev->prev == nullptr) { headflag = 1; break; }
+                if (curprev->prev->value <= curnext->value) break;
+                curprev = curprev->prev;
+            }
+            //curprev = curprev->next;
+
+            if (tailflag) 
+            {
+                this->tail = curnext->prev;
+                curnext->prev->next = nullptr;
+            }
+            else 
+            {
+                curnext->prev->next = curnext->next;//оборвали связь со взятым элементом
+                curnext->next->prev = curnext->prev;
+            }
+
+            curnext->next = curprev;//Добавили взятый элемент на его место
+            if (headflag) 
+            { 
+                this->head = curnext;
+                curnext->prev = nullptr;
+                curprev->prev = curnext;
+            }
+            else 
+            {
+                curnext->prev = curprev->prev;
+                curprev->prev->next = curnext;
+                curprev->prev = curnext;
+            }
+
         }
-        current = current->next;
+        if (tailflag) break;
+        if (current->value < current->next->value) current = current->next;
     }
+    this->setfastarr();
+}
+
+template <typename T>
+void List<T>::serialze(char *filename)
+{
+    ofstream ofs(filename, ios::binary);
+    if (!ofs.is_open()) { cout << "Cannot open " << filename << " for writing" << endl; return; }
+
+}
+
+template <typename T>
+void List<T>::deserialize(char *filename)
+{
+    ifstream ifs(filename, ios::binary);
+    if (ifs.is_open()) { cout << "Cannot open " << filename << " for reading" << endl; return; }
 }

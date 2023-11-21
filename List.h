@@ -2,6 +2,7 @@
 #define LIST_H
 
 #include <iostream>
+#include <fstream>
 using namespace std;
 
 #pragma once
@@ -35,25 +36,27 @@ public:
 
     struct iterator
     {
-        iterator() { node = nullptr;}
-        iterator(Node<T> *node) { this->node = node; }
+        iterator() { node = nullptr; count = 0; }
+        iterator(Node<T> *node) { count = 0; this->node = node; }
         
         T& operator* () { return this->node->value; }
         T& operator=(const T value) { return this->node->value = value; }
 
         iterator& operator++() //need exception
         {
-            if (this->node->next != nullptr) { this->node = this->node->next; return *this; }
+            if (this->node->next != nullptr) { this->node = this->node->next; count++; return *this; }
             else return *this;
         }
         iterator operator++(int) { iterator old = *this; ++(*this); return old; }
         iterator& operator--() //need exceptioin
         {
-            if (this->node->prev != nullptr) { this->node = this->node->prev; return *this; }
+            if (this->node->prev != nullptr) { this->node = this->node->prev; count--; return *this; }
             else return *this;
         }
         iterator operator--(int) { iterator old = *this; --(*this); return old; }
         
+        int get_count() { return count; } // debug
+
         bool operator<(const iterator& other) { return this->node->value < other.node->value; }
         bool operator>(const iterator& other) { return this->node->value > other.node->value; }
         
@@ -61,6 +64,7 @@ public:
         friend class List;
     
     private:
+        int count;
         Node<T> *node;
     };
 
@@ -71,15 +75,18 @@ public:
     int GetSize();
     iterator begin() { return iterator(this->head); }
     iterator end() { return iterator(this->tail); }
-    void insert(iterator& it, const T value);// можно добавить индекс каждому узлу и тем самым уменьшить радиус поиска смещения
+    void insert(iterator& it, const T value);
     void erase(iterator& it);
     void push_back(const T value);
     void pop_back();// need exception
     void push_front(const T value);
     void pop_front();//need exception
-    void printarr();//Нужно будет поменять на возврат массива const
+    void printarr(); // for debug
     void sort();
-    friend void advance(iterator& it, const int index) { for (int i = 0; i < index; i++) ++it; }
+    void serialze(char* filename);
+    void deserialize(char* filename);
+    friend void advance(iterator& it, int index, List<T>& lst) { it.node = lst.fastarr[index / 10]; for (int i = 0; i < index % 10; i++) ++it; } // fast iteration
+    friend void advance(iterator& it, int index) { for (int i = 0; i < index / 10; i++) ++it; } // slow iteration
     
 };
 
