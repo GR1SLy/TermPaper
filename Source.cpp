@@ -31,8 +31,8 @@ int main()
         auto it = lst.begin();
         ++it;
     }
-    catch (const List<int>::ListEx& ex)
-    // catch (const exception& ex) 
+    // catch (const List<int>::ListEx& ex)
+    catch (const exception& ex) 
     {
         cout << ex.what() << endl;
     }

@@ -75,8 +75,8 @@ public:
     {
         const char* info;
     public:
-        ListEx() { this->info = static_cast<const char*>("No exception thrown"); }
-        ListEx(char* info) { this->info = static_cast<char*>(info); }
+        ListEx() noexcept { this->info = static_cast<const char*>("No exception thrown"); }
+        ListEx(char* info) noexcept { this->info = static_cast<char*>(info); }
         const char* what() const noexcept override{ return info; }
     };
 
