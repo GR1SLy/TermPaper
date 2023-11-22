@@ -1,8 +1,4 @@
-/*
-Задачи:
-Поставить УКАЗАТЕЛИ на объекты
-Сериализация
-*/
+
 
 #include <fstream>
 #include "List.cpp"
@@ -28,6 +24,19 @@ int main()
     // lst.push_front(1111);
 
     List<int> lst;
+    int g = 1;
+    lst.push_back(&g);
+    try {
+        // lst.pop_back();
+        auto it = lst.begin();
+        ++it;
+    }
+    catch (const List<int>::ListEx& ex)
+    // catch (const exception& ex) 
+    {
+        cout << ex.what() << endl;
+    }
+    
     int a;
     // for (int i = 0; i < 5; i++)
     // {
@@ -45,11 +54,11 @@ int main()
     lst.print();
 
 
-    lst.serialize("test.bin");
+    // lst.serialize("test.bin");
 
-    List<int> lst2;
-    lst2.deserialize("test.bin");
-    lst2.print();
+    // List<int> lst2;
+    // lst2.deserialize("test.bin");
+    // lst2.print();
 
 
     // List<int> lst2;

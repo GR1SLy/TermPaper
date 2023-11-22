@@ -62,6 +62,7 @@ void List<T>::print()
 template<typename T>
 void List<T>::clear()
 {
+    if (this->head == nullptr) return;
     Node<T> *current = this->head;
     Node<T> *temp = current;
     while (current->next != nullptr)
@@ -158,7 +159,7 @@ void List<T>::push_back(T* value)
 template<typename T>
 void List<T>::pop_back()
 {
-    if (this->head == nullptr) return; // need exception
+    if (this->head == nullptr) throw ListEx("List is empty. Nothing to pop back");
     if (fastarr[size / 10] == this->tail)
     {
         arrsize--;
@@ -210,7 +211,7 @@ void List<T>::push_front(T* value)
 template<typename T>
 void List<T>::pop_front()
 {
-    if (this->head == nullptr) return; // need exception
+    if (this->head == nullptr) throw ListEx("List is empty. Nothing to pop front");
     if (fastarr[size / 10] == this->tail)
     {
         arrsize--;
@@ -257,7 +258,6 @@ void List<T>::sort() // сортировка вставками
                 if (*curprev->prev->value <= *curnext->value) break;
                 curprev = curprev->prev;
             }
-            //curprev = curprev->next;
 
             if (tailflag) 
             {

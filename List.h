@@ -45,16 +45,16 @@ public:
         T& operator* () { return *this->node->value; }
         T& operator=(const T* value) { return *this->node->value = *value; }
 
-        iterator& operator++() //need exception
+        iterator& operator++()
         {
             if (this->node->next != nullptr) { this->node = this->node->next; count++; return *this; }
-            else return *this;
+            else throw ListEx("Iterator out of range. Upper bound");
         }
         iterator operator++(int) { iterator old = *this; ++(*this); return old; }
-        iterator& operator--() //need exceptioin
+        iterator& operator--()
         {
             if (this->node->prev != nullptr) { this->node = this->node->prev; count--; return *this; }
-            else return *this;
+            else throw ListEx("Iterator out of range. Lower bound");;
         }
         iterator operator--(int) { iterator old = *this; --(*this); return old; }
         
@@ -71,6 +71,15 @@ public:
         Node<T> *node;
     };
 
+    class ListEx : public exception
+    {
+        const char* info;
+    public:
+        ListEx() { this->info = static_cast<const char*>("No exception thrown"); }
+        ListEx(char* info) { this->info = static_cast<char*>(info); }
+        const char* what() const noexcept override{ return info; }
+    };
+
     List();
     ~List();
     void print();
@@ -81,9 +90,9 @@ public:
     void insert(iterator& it, const T* value);
     void erase(iterator& it);
     void push_back(T* value);
-    void pop_back();// need exception
+    void pop_back();
     void push_front(T* value);
-    void pop_front();//need exception
+    void pop_front();
     void printarr(); // for debug
     void sort();
     void serialize(char* filename);
@@ -93,6 +102,8 @@ public:
     friend void advance(iterator& it, int index, List<T>& lst) { it.node = lst.fastarr[index / 10]; for (int i = 0; i < index % 10; i++) ++it; } // fast iteration
     friend void advance(iterator& it, int index) { for (int i = 0; i < index / 10; i++) ++it; } // slow iteration
     
+
 };
+
 
 #endif
