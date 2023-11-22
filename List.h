@@ -41,6 +41,7 @@ public:
     {
         iterator() { node = nullptr; count = 0; }
         iterator(Node<T> *node) { count = 0; this->node = node; }
+        iterator(Node<T> *node, unsigned int count):iterator(node) { this->count = count; }
         
         T& operator* () { return *this->node->value; }
         T& operator=(const T* value) { return *this->node->value = *value; }
@@ -67,7 +68,7 @@ public:
         friend class List;
     
     private:
-        int count;
+        unsigned int count;
         Node<T> *node;
     };
 
@@ -87,8 +88,8 @@ public:
     void clear();
     int GetSize();
     iterator begin() { return iterator(this->head); }
-    iterator end() { return iterator(this->tail); }
-    void insert(iterator& it, const T* value);
+    iterator end() { return iterator(this->tail, size - 1); }
+    void insert(iterator& it, T* value);
     void erase(iterator& it);
     void push_back(T* value);
     void pop_back();
@@ -100,8 +101,8 @@ public:
     void serialize(ofstream& ofs);
     void deserialize(char* filename);
     void deserialize(ifstream& ifs);
-    friend void advance(iterator& it, int index, List<T>& lst) { it.node = lst.fastarr[index / 10]; for (int i = 0; i < index % 10; i++) ++it; } // fast iteration
-    friend void advance(iterator& it, int index) { for (int i = 0; i < index / 10; i++) ++it; } // slow iteration
+    friend void advance(iterator& it, int index, List<T>& lst) { it.node = lst.fastarr[index / 10]; it.count = (index / 10) * 10; for (int i = 0; i < index % 10; i++) ++it; } // fast iteration
+    friend void advance(iterator& it, int index) { for (int i = 0; i < index; i++) ++it; } // slow iteration
     
 
 };

@@ -9,13 +9,198 @@ Testing:
 
 */
 
-#include <fstream>
 #include "List.cpp"
+#include "MyString.cpp"
 #include <iostream>
+#include <fstream>
 using namespace std;
+
+void start_test();
+void pushing();
+void poping();
+void insert_erase();
+void sorting();
+void serialize_deserialize();
+void MyString_test();
+void fastarr_test();
 
 int main()
 {
+    start_test();
+    return 0;
+}
+
+void start_test()
+{
+    system("clear");
+    cout << "Welcome to test menu!" << endl;
+    cout << ".....................Tests......................" << endl;
+    cout << "1.\tPush elements\n2.\tPop elements\n3.\tInsert and erase elements\n4.\tSort\n5.\tSerialize and deserialize\n6.\tCheck List with custom MyString class\n7.\tCheck fast array with different methods\n8.\tExit\nInput a number: ";
+    int n;
+    cin >> n;
+    switch (n)
+    {
+        case 1:
+            pushing();
+            break;
+        case 2:
+            poping();
+            break;
+        case 3:
+            insert_erase();
+            break;
+        case 4:
+            sorting();
+            break;
+        case 5:
+            serialize_deserialize();
+            break;
+        case 6:
+            MyString_test();
+            break;
+        case 7:
+            fastarr_test();
+            break;
+        case 8:
+            return;
+        default:
+        {
+            system( "read -n 1 -s -p \"Wrong number! Press any key to restart...\"" );
+            start_test();
+        }
+    }
+}
+
+void pushing()
+{
+    system("clear");
+    cout << "Testing push operations for List................" << endl;
+    List<int> lst;
+    int a = 756;
+    int b = 99;
+    int c = 20;
+    int d = 83;
+    int e = 72;
+    lst.push_back(&a);
+    lst.push_back(&b);
+    lst.push_back(&c);
+    cout << "Current list:" << endl;
+    lst.print();
+    cout << "Pushing " << d << " front by pointer (list.push_front(&" << d << ");)" << endl;
+    lst.push_front(&d);
+    lst.print();
+    cout << "Pushing " << e << " back by pointer (list.push_back(&" << e << "):)" << endl;
+    lst.push_back(&e);
+    lst.print();
+    system( "read -n 1 -s -p \"Press any key to continue...\"" );
+    start_test();
+}
+
+void poping()
+{
+    system("clear");
+    cout << "Testing pop operations for List................." << endl;
+    List<int> lst;
+    int a = 756;
+    int b = 99;
+    int c = 20;
+    int d = 83;
+    int e = 72;
+    lst.push_back(&a);
+    lst.push_back(&b);
+    lst.push_back(&c);
+    lst.push_back(&d);
+    lst.push_back(&e);
+    cout << "Current list:" << endl;
+    lst.print();
+    cout << "Poping back (list.pop_back();)" << endl;
+    lst.pop_back();
+    lst.print();
+    cout << "Poping front (list.pop_front();)" << endl;
+    lst.pop_front();
+    lst.print();
+    system( "read -n 1 -s -p \"Press any key to continue...\"" );
+    start_test();
+}
+
+void insert_erase()
+{
+    system("clear");
+    cout << "Testing insert and erase operations............." << endl;
+    List<int> lst;
+    int a = 756;
+    int b = 99;
+    int c = 20;
+    int d = 83;
+    int e = 72;
+    lst.push_back(&a);
+    lst.push_back(&b);
+    lst.push_back(&c);
+    cout << "Current list:" << endl;
+    lst.print();
+    List<int>::iterator it = lst.begin();
+    advance(it, 2);
+    cout << "Inserting " << d << " before third element (list.insert(it, &" << d << ");)" << endl;
+    lst.insert(it, &d);
+    lst.print();
+    cout << "Erasing second element (list.erase(it);)" << endl;
+    it = lst.begin();
+    lst.erase(++it);
+    lst.print();
+    system( "read -n 1 -s -p \"Press any key to continue...\"" );
+    start_test();
+}
+
+void sorting()
+{
+    system("clear");
+    cout << "Testing sort for int List......................." << endl;
+    List<int> lst;
+    int a = 756;
+    int b = 99;
+    int c = 20;
+    int d = 83;
+    int e = 72;
+    lst.push_back(&a);
+    lst.push_back(&b);
+    lst.push_back(&c);
+    lst.push_back(&d);
+    lst.push_back(&e);
+    cout << "Current list:" << endl;
+    lst.print();
+    cout << "Sorted list (list.sort()):" << endl;
+    lst.sort();
+    lst.print();
+    cout << "Testing sort for char* List....................." << endl;
+    List<char*> lstc;
+    char* ac = new char[5];
+    ac = "ertf\0";
+    char* bc = new char[5];
+    bc = "asde\0";
+    char* cc = new char[5];
+    cc = "thg\0";
+    char* dc = new char[5];
+    dc = "zyrt\0";
+    char* ec = new char[5];
+    ec = "iuor\0";
+    lstc.push_back(&ac);
+    lstc.push_front(&bc);
+    lstc.push_front(&cc);
+    lstc.push_front(&dc);
+    lstc.push_front(&ec);
+    cout << "Current list:" << endl;
+    lstc.print();
+    cout << "Sorted list (list.sort()):" << endl;
+    lstc.sort();
+    lstc.print();
+    system( "read -n 1 -s -p \"Press any key to continue...\"" );
+    start_test();
+}
+
+void serialize_deserialize()
+{
+    system("clear");
+    cout << "Testing serialization and deserialization List..." << endl;
     List<char*> lst;
     char* a = new char[5];
     a = "ertf\0";
@@ -32,126 +217,95 @@ int main()
     lst.push_front(&c);
     lst.push_front(&d);
     lst.push_front(&e);
+    cout << "Current list:" << endl;
     lst.print();
+    int n;
+    cout << "Choose method:\n1.\tSerialize\n2.\tDeserialize\n3.\tReturn to menu\nInput a number: ";
+    cin >> n;
+    if (n == 1) { cout << "Starting serialization. Check test.bin!" << endl; lst.serialize("test.bin"); system( "read -n 1 -s -p \"Press any key to continue...\"" ); serialize_deserialize(); }
+    else if (n == 2) { List<char*> lst; cout << "Starting deserialization from test.bin" << endl; lst.deserialize("test.bin"); lst.print(); system( "read -n 1 -s -p \"Press any key to continue...\"" ); serialize_deserialize(); }
+    else if (n == 3) { start_test(); }
+    else { system( "read -n 1 -s -p \"Wrong number! Press any key to restart...\"" ); serialize_deserialize(); }
+}
+
+void MyString_test()
+{
+    system("clear");
+    cout << "Testing List with custom class MyString.........." << endl;
+    List<MyString> lst;
+    MyString s1 = "Hello";
+    MyString s2 = "World";
+    MyString s3 = "!";
+    lst.push_back(&s1);
+    lst.push_back(&s2);
+    lst.push_back(&s3);
+    cout << "Current list:" << endl;
+    lst.print();
+    cout << "Sorted list:" << endl;
     lst.sort();
     lst.print();
-    lst.serialize("test.bin");
+    system( "read -n 1 -s -p \"Press any key to continue...\"" );
+    start_test();
+}
 
-    List<char*> lst2;
-    lst2.deserialize("test.bin");
-    lst2.print();
-
-
-    /* lst.print();
-    cout << endl << endl;
-    List<int>::iterator it = lst.begin();
-    cout << "Fit: " << *++it << endl;
-    lst.insert(it, 999);
+void fastarr_test()
+{
+    system("clear");
+    cout << "Testing List's fastarray........................" << endl;
+    List<int> lst;
+    int *a;
+    for (int i = 0; i < 35; i++)
+    {
+        a = new int(i);
+        lst.push_front(a);
+    }
+    cout << "Current list:" << endl;
     lst.print();
-    advance(it, 2);
-    cout << "Sit: " << *++it << endl;
-    lst.erase(it);
-    lst.print(); */
-    // lst.push_front(32);
-    //List<int>::iterator it = lst.begin();
-    //lst.insert(it, 7632);
-    //lst.erase(it);
-    // lst.push_front(1111);
-
-    // List<int> lst;
-    // int g = 1;
-    // lst.push_back(&g);
-    // try {
-    //     // lst.pop_back();
-    //     auto it = lst.begin();
-    //     ++it;
-    // }
-    // // catch (const List<int>::ListEx& ex)
-    // catch (const exception& ex) 
-    // {
-    //     cout << ex.what() << endl;
-    // }
-    
-    // int a;
-    // for (int i = 0; i < 5; i++)
-    // {
-    //     a = i;
-    //     cout << a << endl;
-    //     lst.push_back(&a);
-    // }
-    // int b = 99;
-    // int c = 20;
-    // int d = 83;
-    // int e = 72;
-    // lst.push_back(&b);
-    // lst.push_back(&c);
-    // lst.push_front(&d);
-    // lst.print();
-
-
-    // lst.serialize("test.bin");
-
-    // List<int> lst2;
-    // lst2.deserialize("test.bin");
-    // lst2.print();
-
-
-    // List<int> lst2;
-    // ifstream ifs("test.bin");
-    // if (!ifs.is_open()) cout << "Cannot open test.bin for reading" << endl;
-    // else lst2.deserialize(ifs);
-    // lst2.deserialize("test.bin");
-    // lst2.print();
-    
-    // lst.push_front(928);
-    // lst.push_front(8832);
-
-    // //lst.sort();
-    // cout << "Current List:" << endl;
-    // lst.print();
-    // cout << "Size of list: " << lst.GetSize() << endl;
-    // cout << endl << endl;
-    // lst.printarr();
-
-    // auto it = lst.begin();
-    // cout << "it1: " << it.get_count() << endl;
-    // ++it;
-    // cout << "it2: " << it.get_count() << endl;
-    // advance(it, 5, lst);
-    // cout << "it3: " << it.get_count() << endl;
-    // lst.insert(it, 9874);
-    // lst.erase(++it);
-    // // it = lst.end();
-    // lst.print();
-    // lst.printarr();
-    // cout << endl;
-    // lst.erase(it);
-    // cout << "it4: " << it.get_count() << endl;
-    // cout << endl << endl;
-    // lst.pop_back();
-    // lst.print();
-    // cout << endl;
-    // lst.printarr();
-    // lst.push_front(8832);
-    // lst.push_front(735);
-    // lst.push_front(888);
-    // lst.push_front(823);
-    // lst.push_back(2);
-    // lst.push_front(5);
-    // lst.push_front(20);
-    // lst.push_front(18);
-    // lst.push_front(17);
-    // lst.push_front(1);
-    // lst.push_back(1);
-    // lst.push_back(0);
-    // lst.push_back(10);
-    // lst.push_back(9);
-    // lst.push_back(8);
-    // lst.push_front(3);
-    // lst.push_back(3);
-    // lst.print();
-    // cout << endl << endl;
-    // lst.sort();
-    // lst.print();
-    return 0;
+    lst.printarr();
+    cout << endl;
+    List<int>::iterator it;
+    cout << "Choose tests: \n1.\tPush and pop\n2.\tInsert\n3.\tErase\nInput a number: ";
+    int n;
+    cin >> n;
+    switch (n)
+    {
+        case 1:
+        {
+            system("clear");
+            cout << "Pushing front" << endl;
+            int b = 999;
+            lst.push_front(&b);
+            lst.print();
+            lst.printarr();
+            cout << "Poping front" << endl;
+            lst.pop_front();
+            lst.pop_front();
+            lst.print();
+            lst.printarr();
+            break;
+        }
+        case 2:
+        {
+            it = lst.begin();
+            advance(it, 25, lst);
+            int c = 47543;
+            cout << "Insert " << c << " before 15th element" << endl;
+            lst.insert(it, &c);
+            lst.print();
+            lst.printarr();
+            break;
+        }
+        case 3:
+        {
+            it = lst.begin();
+            advance(it, 15, lst);
+            cout << "Erase 15 element" << endl;
+            lst.erase(it);
+            lst.print();
+            lst.printarr();
+            break;
+        }
+    }
+    system( "read -n 1 -s -p \"Press any key to continue...\"" );
+    start_test();
 }

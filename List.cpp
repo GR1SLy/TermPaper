@@ -86,7 +86,7 @@ int List<T>::GetSize()
 }
 
 template<typename T>
-void List<T>::insert(iterator &it, const T* value)
+void List<T>::insert(iterator &it, T* value)
 {
     Node<T> *current = it.node;
     if (current == this->head)
@@ -97,13 +97,13 @@ void List<T>::insert(iterator &it, const T* value)
     }
     else current->prev->next = new Node<T>(value, current, current->prev);
     size++;
-
     if (arrsize > it.count / 10) for (int i = it.count / 10 + 1; i < arrsize; i++) fastarr[i] = fastarr[i]->prev;
 }
 
 template<typename T>
 void List<T>::erase(iterator& it)
 {
+    if (it.node == this->tail) throw ("Cannot erase last element. Use push_back() instead");
     if (fastarr[arrsize - 1] == this->tail)
     {
         Node<T>** temp = fastarr;
@@ -232,8 +232,9 @@ void List<T>::printarr()
 {
     for (int i = 0; i < arrsize; i++)
     {
-        cout << fastarr[i]->value << endl;
+        cout << i << ": " << *fastarr[i]->value << "\t";
     }
+    cout << endl;
 }
 
 template <typename T>
@@ -252,7 +253,7 @@ void List<T>::sort() // сортировка вставками
 
             if (curnext == this->tail) tailflag = 1;
 
-            while (**curnext->value < **curprev->value)
+            while (*curnext->value < *curprev->value)
             {
                 if (curprev->prev == nullptr) { headflag = 1; break; }
                 if (*curprev->prev->value <= *curnext->value) break;
@@ -421,6 +422,7 @@ void List<T>::deserialize(ifstream& ifs)
 template<>
 void List<char*>::deserialize(ifstream& ifs)
 {
+    this->clear();
     ifs.read((char*)&size, sizeof(int));
     int slen;
     ifs.read((char*)&slen, sizeof(int));
