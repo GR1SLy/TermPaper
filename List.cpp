@@ -252,7 +252,7 @@ void List<T>::sort() // сортировка вставками
 
             if (curnext == this->tail) tailflag = 1;
 
-            while (*curnext->value < *curprev->value)
+            while (**curnext->value < **curprev->value)
             {
                 if (curprev->prev == nullptr) { headflag = 1; break; }
                 if (*curprev->prev->value <= *curnext->value) break;
@@ -286,7 +286,62 @@ void List<T>::sort() // сортировка вставками
 
         }
         if (tailflag) break;
-        if (current->value < current->next->value) current = current->next;
+        if (*current->value < *current->next->value) current = current->next;
+    }
+    this->setfastarr();
+}
+
+template <>
+void List<char*>::sort() // специализация для char*
+{
+    Node<char*>* current = this->head;
+    bool headflag, tailflag;
+    while (current->next != nullptr)
+    {
+        if (**current->next->value <= **current->value)
+        {
+            Node<char*>* curprev = current;
+            Node<char*>* curnext = current->next;
+
+            headflag = tailflag = 0;
+
+            if (curnext == this->tail) tailflag = 1;
+
+            while (**curnext->value < **curprev->value)
+            {
+                if (curprev->prev == nullptr) { headflag = 1; break; }
+                if (**curprev->prev->value <= **curnext->value) break;
+                curprev = curprev->prev;
+            }
+
+            if (tailflag) 
+            {
+                this->tail = curnext->prev;
+                curnext->prev->next = nullptr;
+            }
+            else 
+            {
+                curnext->prev->next = curnext->next;//оборвали связь со взятым элементом
+                curnext->next->prev = curnext->prev;
+            }
+
+            curnext->next = curprev;//Добавили взятый элемент на его место
+            if (headflag) 
+            { 
+                this->head = curnext;
+                curnext->prev = nullptr;
+                curprev->prev = curnext;
+            }
+            else 
+            {
+                curnext->prev = curprev->prev;
+                curprev->prev->next = curnext;
+                curprev->prev = curnext;
+            }
+
+        }
+        if (tailflag) break;
+        if (**current->value < **current->next->value) current = current->next;
     }
     this->setfastarr();
 }
@@ -298,6 +353,7 @@ void List<T>::serialize(char *filename)
     if (!ofs.is_open()) { cout << "Cannot open " << filename << " for writing" << endl; return; }
     this->serialize(ofs);
 }
+
 template <typename T>
 void List<T>::serialize(ofstream& ofs)
 {
@@ -305,6 +361,25 @@ void List<T>::serialize(ofstream& ofs)
     Node<T>* current = this->head;
     while (current->next != nullptr) { ofs.write((char*)current->value, sizeof(T)); current = current->next; }
     ofs.write((char*)current->value, sizeof(T));
+    ofs.close();
+}
+
+template<>
+void List<char*>::serialize(ofstream& ofs)
+{
+    ofs.write((char*)&size, sizeof(unsigned int));
+    Node<char*>* current = this->head;
+    int slen;
+    while (current->next != nullptr) 
+    { 
+        slen = strlen(*current->value); 
+        ofs.write((char*)&slen, sizeof(int)); 
+        ofs.write(*current->value, slen); 
+        current = current->next; 
+    }
+    slen = strlen(*current->value);
+    ofs.write((char*)&slen, sizeof(int));
+    ofs.write(*current->value, slen);
     ofs.close();
 }
 
@@ -316,6 +391,7 @@ void List<T>::deserialize(char *filename)
     this->deserialize(ifs);
 
 }
+
 
 template<typename T>
 void List<T>::deserialize(ifstream& ifs)
@@ -342,10 +418,56 @@ void List<T>::deserialize(ifstream& ifs)
     deserializeflag = 1;
 }
 
+template<>
+void List<char*>::deserialize(ifstream& ifs)
+{
+    ifs.read((char*)&size, sizeof(int));
+    int slen;
+    ifs.read((char*)&slen, sizeof(int));
+    char* value = new char[slen + 1];
+    ifs.read(value, slen);
+    value[slen] = '\0';
+    char** valptr = new char*(value);
+    this->head = new Node<char*>(valptr);
+    Node<char*>* current = this->head;
+    for (int i = 1; i < size - 1; i++)
+    {
+        ifs.read((char*)&slen, sizeof(int));
+        value = new char[slen + 1];
+        ifs.read(value, slen);
+        value[slen + 1] = '\0';
+        valptr = new char*(value);
+        current->next = new Node<char*>(valptr, current, 0);
+        current = current->next;
+    }
+    ifs.read((char*)&slen, sizeof(int));
+    value = new char[slen + 1];
+    ifs.read(value, slen);
+    value[slen] = '\0';
+    valptr = new char*(value);
+    this->tail = new Node<char*>(valptr, current, 0);
+    current->next = this->tail;
+    ifs.close();
+    this->setfastarr();
+    deserializeflag = 1;
+}
+
 template <typename T>
 void List<T>::clear_deserialized_objects()
 {
     Node<T>* current = this->head;
     while (current->next != nullptr) { delete current->value; current = current->next; }
     delete current->value;
+}
+
+template<>
+void List<char*>::clear_deserialized_objects()
+{
+    Node<char*>* current = this->head;
+    while (current->next != nullptr) 
+    { 
+        delete *current->value; 
+        current = current->next; 
+    }
+    delete *current->value;
 }

@@ -1,4 +1,13 @@
+/* 
+Testing:
+Добавление
+Включение/исключение по логическому номеру
+Сортировка
+Сохранение/загрузка в бинарник
+Проверить для int, char*, double, MyString
+Загрузка char* из txt файла
 
+*/
 
 #include <fstream>
 #include "List.cpp"
@@ -7,6 +16,32 @@ using namespace std;
 
 int main()
 {
+    List<char*> lst;
+    char* a = new char[5];
+    a = "ertf\0";
+    char* b = new char[5];
+    b = "asde\0";
+    char* c = new char[5];
+    c = "thg\0";
+    char* d = new char[5];
+    d = "zyrt\0";
+    char* e = new char[5];
+    e = "iuor\0";
+    lst.push_back(&a);
+    lst.push_front(&b);
+    lst.push_front(&c);
+    lst.push_front(&d);
+    lst.push_front(&e);
+    lst.print();
+    lst.sort();
+    lst.print();
+    lst.serialize("test.bin");
+
+    List<char*> lst2;
+    lst2.deserialize("test.bin");
+    lst2.print();
+
+
     /* lst.print();
     cout << endl << endl;
     List<int>::iterator it = lst.begin();
@@ -23,35 +58,35 @@ int main()
     //lst.erase(it);
     // lst.push_front(1111);
 
-    List<int> lst;
-    int g = 1;
-    lst.push_back(&g);
-    try {
-        // lst.pop_back();
-        auto it = lst.begin();
-        ++it;
-    }
-    // catch (const List<int>::ListEx& ex)
-    catch (const exception& ex) 
-    {
-        cout << ex.what() << endl;
-    }
+    // List<int> lst;
+    // int g = 1;
+    // lst.push_back(&g);
+    // try {
+    //     // lst.pop_back();
+    //     auto it = lst.begin();
+    //     ++it;
+    // }
+    // // catch (const List<int>::ListEx& ex)
+    // catch (const exception& ex) 
+    // {
+    //     cout << ex.what() << endl;
+    // }
     
-    int a;
+    // int a;
     // for (int i = 0; i < 5; i++)
     // {
     //     a = i;
     //     cout << a << endl;
     //     lst.push_back(&a);
     // }
-    int b = 99;
-    int c = 20;
-    int d = 83;
-    int e = 72;
-    lst.push_back(&b);
-    lst.push_back(&c);
-    lst.push_front(&d);
-    lst.print();
+    // int b = 99;
+    // int c = 20;
+    // int d = 83;
+    // int e = 72;
+    // lst.push_back(&b);
+    // lst.push_back(&c);
+    // lst.push_front(&d);
+    // lst.print();
 
 
     // lst.serialize("test.bin");
