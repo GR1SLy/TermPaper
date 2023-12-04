@@ -310,6 +310,7 @@ void fastarr_test()
 
 void Check_BigData()
 {
+    system("clear");
     List<int> lst;
     cout << "Enter count of elements to check: ";
     long int n;
