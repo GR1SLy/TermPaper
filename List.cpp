@@ -63,6 +63,7 @@ template<typename T>
 void List<T>::clear()
 {
     if (this->head == nullptr) return;
+    if (deserializeflag) this->clear_deserialized_objects();
     Node<T> *current = this->head;
     Node<T> *temp = current;
     while (current->next != nullptr)
@@ -95,7 +96,7 @@ void List<T>::insert(iterator &it, T* value)
         current->prev = this->head;
         it.node = this->head;
     }
-    else current->prev->next = new Node<T>(value, current, current->prev);
+    else { current->prev->next = new Node<T>(value, current, current->prev); current->prev = current->prev->next; }
     size++;
     if (arrsize > it.count / 10) for (int i = it.count / 10 + 1; i < arrsize; i++) fastarr[i] = fastarr[i]->prev;
 }
@@ -103,7 +104,7 @@ void List<T>::insert(iterator &it, T* value)
 template<typename T>
 void List<T>::erase(iterator& it)
 {
-    if (it.node == this->tail) throw ("Cannot erase last element. Use push_back() instead");
+    if (it.node == this->tail) { it.node = it.node->prev; this->pop_back(); return; }
     if (fastarr[arrsize - 1] == this->tail)
     {
         Node<T>** temp = fastarr;
@@ -353,6 +354,7 @@ void List<T>::serialize(char *filename)
     ofstream ofs(filename, ios::binary);
     if (!ofs.is_open()) { cout << "Cannot open " << filename << " for writing" << endl; return; }
     this->serialize(ofs);
+    ofs.close();
 }
 
 template <typename T>
@@ -362,7 +364,6 @@ void List<T>::serialize(ofstream& ofs)
     Node<T>* current = this->head;
     while (current->next != nullptr) { ofs.write((char*)current->value, sizeof(T)); current = current->next; }
     ofs.write((char*)current->value, sizeof(T));
-    ofs.close();
 }
 
 template<>
@@ -381,7 +382,6 @@ void List<char*>::serialize(ofstream& ofs)
     slen = strlen(*current->value);
     ofs.write((char*)&slen, sizeof(int));
     ofs.write(*current->value, slen);
-    ofs.close();
 }
 
 template <typename T>
@@ -390,7 +390,7 @@ void List<T>::deserialize(char *filename)
     ifstream ifs(filename, ios::binary);
     if (!ifs.is_open()) { cout << "Cannot open " << filename << " for reading" << endl; return; }
     this->deserialize(ifs);
-
+    ifs.close();
 }
 
 
@@ -414,7 +414,6 @@ void List<T>::deserialize(ifstream& ifs)
     valptr = new T(value);
     this->tail = new Node<T>(valptr, current, 0);
     current->next = this->tail;
-    ifs.close();
     this->setfastarr();
     deserializeflag = 1;
 }
@@ -449,7 +448,6 @@ void List<char*>::deserialize(ifstream& ifs)
     valptr = new char*(value);
     this->tail = new Node<char*>(valptr, current, 0);
     current->next = this->tail;
-    ifs.close();
     this->setfastarr();
     deserializeflag = 1;
 }

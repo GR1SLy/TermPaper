@@ -1,18 +1,12 @@
-/* 
-Testing:
-Добавление
-Включение/исключение по логическому номеру
-Сортировка
-Сохранение/загрузка в бинарник
-Проверить для int, char*, double, MyString
-Загрузка char* из txt файла
-
+/*
+exception tests
 */
-
 #include "List.cpp"
 #include "MyString.cpp"
 #include <iostream>
 #include <fstream>
+#include <chrono>
+using namespace std::chrono;
 using namespace std;
 
 void start_test();
@@ -23,6 +17,7 @@ void sorting();
 void serialize_deserialize();
 void MyString_test();
 void fastarr_test();
+void Check_BigData();
 
 int main()
 {
@@ -35,7 +30,7 @@ void start_test()
     system("clear");
     cout << "Welcome to test menu!" << endl;
     cout << ".....................Tests......................" << endl;
-    cout << "1.\tPush elements\n2.\tPop elements\n3.\tInsert and erase elements\n4.\tSort\n5.\tSerialize and deserialize\n6.\tCheck List with custom MyString class\n7.\tCheck fast array with different methods\n8.\tExit\nInput a number: ";
+    cout << "1.\tPush elements\n2.\tPop elements\n3.\tInsert and erase elements\n4.\tSort\n5.\tSerialize and deserialize\n6.\tCheck List with custom MyString class\n7.\tCheck fast array with different methods\n8.\tCheck sort with big data\n9.\tExit\nInput a number: ";
     int n;
     cin >> n;
     switch (n)
@@ -62,6 +57,9 @@ void start_test()
             fastarr_test();
             break;
         case 8:
+            Check_BigData();
+            break;
+        case 9:
             return;
         default:
         {
@@ -306,6 +304,31 @@ void fastarr_test()
             break;
         }
     }
+    system( "read -n 1 -s -p \"Press any key to continue...\"" );
+    start_test();
+}
+
+void Check_BigData()
+{
+    List<int> lst;
+    cout << "Enter count of elements to check: ";
+    long int n;
+    cin >> n;
+    int **arr = new int*[n];
+    for (int i = 0; i < n; i++)
+    {
+        arr[i] = new int(i);
+        lst.push_front(arr[i]);
+    }
+    auto start = steady_clock::now();
+    lst.sort();
+    auto finish = steady_clock::now();
+    cout << "Duration of sort with " << n << " elements: " << duration_cast<milliseconds>(finish - start).count() << " milliseconds" << endl;
+    for (int i = 0; i < n; i++)
+    {
+        delete arr[i];
+    }
+    delete[] arr;
     system( "read -n 1 -s -p \"Press any key to continue...\"" );
     start_test();
 }

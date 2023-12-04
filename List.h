@@ -17,7 +17,7 @@ class List
         T1* value;
         Node* next;
         Node* prev;
-        Node() { value = T1(); next = nullptr; prev = nullptr; }
+        Node() { value = nullptr; next = nullptr; prev = nullptr; }
         Node(T1* value) { this->value = value; next = nullptr; prev = nullptr; }
         Node(T1* value, Node* next):Node(value) { this->next = next; prev = nullptr; }
         Node(T1* value, Node* prev, int k):Node(value) { this->prev = prev; next = nullptr; }
@@ -89,6 +89,7 @@ public:
     int GetSize();
     iterator begin() { return iterator(this->head); }
     iterator end() { return iterator(this->tail, size - 1); }
+    iterator get_array_element(int index) { if (index < arrsize) return iterator(this->fastarr[index], index * 10); else throw ListEx("Index out of bounds"); }
     void insert(iterator& it, T* value);
     void erase(iterator& it);
     void push_back(T* value);
